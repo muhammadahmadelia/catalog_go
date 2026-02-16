@@ -1,0 +1,9 @@
+{
+    "brands": [
+        {
+            "brand": "Ana Hickmann",
+            "code": "AH",
+            "glasses_type": [ "Sunglasses" ]
+        }
+    ]
+}
