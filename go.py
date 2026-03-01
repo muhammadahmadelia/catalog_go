@@ -406,6 +406,7 @@ def read_data_from_json_file(DEBUG, result_filename: str):
                 if '/' in frame_code: frame_code = frame_code.replace('/', '-').strip()
                 frame_color = str(json_d['frame_color']).strip().title()
                 lens_color = str(json_d['lens_color']).strip().title()
+                glasses_type = str(json_d['type']).strip()
                 
                 for json_metafiels in json_d['metafields']:
                     if json_metafiels['key'] == 'img_url':img_url = str(json_metafiels['value']).strip()
@@ -420,7 +421,7 @@ def read_data_from_json_file(DEBUG, result_filename: str):
                         if image_attachment:
                             with open(image_filename, 'wb') as f: f.write(image_attachment)
                             crop_downloaded_image(f'Images/{sku}.jpg')
-                    data.append([frame_code, lens_color, brand, sku, wholesale_price, clip_on])
+                    data.append([frame_code, lens_color, brand, glasses_type, sku, wholesale_price, clip_on])
     except Exception as e:
         if DEBUG: print(f'Exception in read_data_from_json_file: {e}')
         else: pass
@@ -481,10 +482,12 @@ def saving_picture_in_excel(data: list):
     worksheet.cell(row=1, column=1, value='Model Code')
     worksheet.cell(row=1, column=2, value='Lens Code')
     worksheet.cell(row=1, column=3, value='Brand')
-    worksheet.cell(row=1, column=4, value='SKU')
-    worksheet.cell(row=1, column=5, value='Wholesale Price')
-    worksheet.cell(row=1, column=6, value="Clip On")
-    worksheet.cell(row=1, column=7, value="Image")
+    worksheet.cell(row=1, column=4, value="Glasses Type")
+    worksheet.cell(row=1, column=5, value='SKU')
+    worksheet.cell(row=1, column=6, value='Wholesale Price')
+    worksheet.cell(row=1, column=7, value="Clip On")
+    worksheet.cell(row=1, column=8, value="Image")
+
 
     for index, d in enumerate(data):
         new_index = index + 2
@@ -495,13 +498,14 @@ def saving_picture_in_excel(data: list):
         worksheet.cell(row=new_index, column=4, value=d[3])
         worksheet.cell(row=new_index, column=5, value=d[4])
         worksheet.cell(row=new_index, column=6, value=d[5])
+        worksheet.cell(row=new_index, column=7, value=d[6])
 
         image = f'Images/{d[-3]}.jpg'
         if os.path.exists(image):
             im = Image.open(image)
             width, height = im.size
             worksheet.row_dimensions[new_index].height = height
-            worksheet.add_image(Imag(image), anchor='G'+str(new_index))
+            worksheet.add_image(Imag(image), anchor='H'+str(new_index))
 
     workbook.save('Go Results.xlsx')
 
